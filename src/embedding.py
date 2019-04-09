@@ -31,10 +31,15 @@ def generate_twitter_embeddings(model, save=True):
 
     print("Twitter dataset loaded")
 
-    # Get word embeddings
+    # Get word embeddings. Delete variables between calls to free up memory
     train_vectors = embed_set(model, X_train)
+    del X_train
     val_vectors = embed_set(model, X_val)
+    del X_val
     test_vectors = embed_set(model, X_test)
+    del X_test
+
+    print("Vectors generated")
 
     embedded_data = Dataset(train_vectors, Y_train, val_vectors, Y_val, test_vectors, Y_test)
 
