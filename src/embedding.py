@@ -2,7 +2,7 @@ import numpy as np
 import pickle
 import gensim
 from collections import namedtuple
-from preprocess import preprocess_twitter
+from preprocess import preprocess_twitter, preprocess_treebank
 
 # Define dataset container
 Dataset = namedtuple('Dataset','train_vectors, Y_train, val_vectors, Y_val, test_vectors, Y_test')
@@ -49,6 +49,39 @@ def generate_twitter_embeddings(model, save=True):
         print("Word embeddings saved to: ", file_path, "\n Use pickle.load() to retrieve it.")
 
     return embedded_data
+
+
+
+def generate_treebank_embeddings(model, save=True):
+    """Generate word embeddings for the TreeBank sentiment dataset. Saves to file by default."""
+
+    # # Define dataset container
+    # Dataset = namedtuple('Dataset','train_vectors, Y_train, val_vectors, Y_val, test_vectors, Y_test')
+
+    # Load dataset
+    X_train, Y_train, X_val, Y_val, X_test, Y_test = preprocess_treebank()
+
+    print("Twitter dataset loaded")
+
+    # Get word embeddings. Delete variables between calls to free up memory
+    train_vectors = embed_set(model, X_train)
+    del X_train
+    val_vectors = embed_set(model, X_val)
+    del X_val
+    test_vectors = embed_set(model, X_test)
+    del X_test
+
+    print("Vectors generated")
+
+    embedded_data = Dataset(train_vectors, Y_train, val_vectors, Y_val, test_vectors, Y_test)
+
+    if save:
+        file_path = "../data/treebank_word2vec.pickle"
+        pickle.dump(embedded_data, open(file_path, 'wb'))
+        print("Word embeddings saved to: ", file_path, "\n Use pickle.load() to retrieve it.")
+
+    return embedded_data
+
 
 
 
