@@ -1,6 +1,7 @@
 import numpy as np
 import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
+import pickle
 from tqdm import tqdm
 
 def sentence_embed(X, method = "mean"):
@@ -13,7 +14,7 @@ def sentence_embed(X, method = "mean"):
     nlp_objects = list()
     nlp_vectors = np.zeros((N, 300))
 
-    # converts the words of the sentences to vectors
+    # converts the words of the sentences to their embeddings
     for i in tqdm(range(N)):
         nlp_objects.append(nlp(X[i]))
 
@@ -38,7 +39,8 @@ def sentence_embed(X, method = "mean"):
             # get the weights of the words o the sentence
             weights = np.array([tfidf_scores[token.lower()] if token.lower() in tfidf_scores else 0 for token in tokens])
             # computes the vector embeding of the sentence
-            nlp_vectors[i,:] = np.average(vectors, axis = 0, weights=weights) #normalizes by sum of weights
+            if np.any(weights):
+                nlp_vectors[i,:] = np.average(vectors, axis = 0, weights=weights) #normalizes by sum of weights
     else:
         print("Unknown method")
 
