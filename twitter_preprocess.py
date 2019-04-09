@@ -36,5 +36,9 @@ def preprocess_twitter():
     X_train = [re.sub(r'(\w)\1+',r'\1\1', text) for text in X_train]
     X_val = [re.sub(r'(\w)\1+', r'\1\1', text) for text in X_val]
     X_test = [re.sub(r'(\w)\1+', r'\1\1', text) for text in X_test]
+
+    X_train = np.asarray(X_train)
+    X_val = np.asarray(X_val)
+    X_test = np.asarray(X_test)
     
     return (X_train, y_train, X_val, y_val, X_test, y_test)
